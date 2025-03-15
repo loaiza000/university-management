@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { response } from "../helpers/response.js";
 import { alumnoModel } from "../models/alumnoModel.js";
 import { cursoModel } from "../models/cursoModel.js";
@@ -9,6 +10,9 @@ const universidadController = {};
 universidadController.getAll = async (req, res) => {
   try {
     const universidades = await universidadModel.find();
+    if (universidades.length === 0) {
+      return response(res, 404, false, "", "No se encontraron universidades");
+    }
     return response(res, 200, true, universidades, "lista de universidades");
   } catch (error) {
     return response(res, 500, false, "", error.message);
@@ -18,6 +22,17 @@ universidadController.getAll = async (req, res) => {
 universidadController.getById = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return response(
+        res,
+        400,
+        false,
+        "",
+        `El id ${id} no es valido para la base de datos`
+      );
+    }
+
     const universidadEncontrada = await universidadModel.findById({ _id: id });
     if (!universidadEncontrada) {
       return response(res, 404, false, "", "universidad no encontrada");
@@ -68,6 +83,17 @@ universidadController.putUniversidad = async (req, res) => {
   try {
     const { id } = req.params;
     const { nombre, telefono, correo } = req.body;
+
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return response(
+        res,
+        400,
+        false,
+        "",
+        `El id ${id} no es valido para la base de datos`
+      );
+    }
+
     const universidadEncontrada = await universidadModel.findById({ _id: id });
     if (!universidadEncontrada) {
       return response(res, 404, false, "", "universidad no encontrada");
@@ -102,6 +128,17 @@ universidadController.putUniversidad = async (req, res) => {
 universidadController.deleteUniversidad = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return response(
+        res,
+        400,
+        false,
+        "",
+        `El id ${id} no es valido para la base de datos`
+      );
+    }
+
     const universidadEncontrada = await universidadModel.findById({ _id: id });
     if (!universidadEncontrada) {
       return response(res, 404, false, "", "universidad no encontrada");

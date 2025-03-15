@@ -4,12 +4,16 @@ import { notaModel } from "../models/notaModel.js";
 import { profesorModel } from "../models/profesorModel.js";
 import { universidadModel } from "../models/universidadModel.js";
 import { response } from "../helpers/response.js";
+import mongoose from "mongoose";
 
 const cursoController = {};
 
 cursoController.getAll = async (req, res) => {
   try {
     const cursos = await cursoModel.find();
+    if (cursos.length === 0) {
+      return response(res, 404, false, "", "No se encontraron cursos");
+    }
     return response(res, 200, true, cursos, "lista de cursos");
   } catch (error) {
     return response(res, 500, false, "", error.message);
@@ -19,6 +23,17 @@ cursoController.getAll = async (req, res) => {
 cursoController.getById = async (req, res) => {
   try {
     const { id } = req.params;
+    
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return response(
+        res,
+        400,
+        false,
+        "",
+        `El id ${id} no es valido para la base de datos`
+      );
+    }
+
     const cursoEncontrado = await cursoModel.findById({ _id: id });
     if (!cursoEncontrado) {
       return response(res, 404, false, "", "curso no encontrado");
@@ -148,13 +163,7 @@ cursoController.listarCursoIdentificacion = async (req, res) => {
         "el profesor no tiene cursos asignados"
       );
     }
-    return response(
-      res,
-      200,
-      true,
-      profesorCursos,
-      `cursos del profesor`
-    );
+    return response(res, 200, true, profesorCursos, `cursos del profesor`);
   } catch (error) {
     return response(res, 500, false, "", error.message);
   }

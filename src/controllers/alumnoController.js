@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { response } from "../helpers/response.js";
 import { alumnoModel } from "../models/alumnoModel.js";
 import { cursoModel } from "../models/cursoModel.js";
@@ -9,6 +10,9 @@ const alumnoController = {};
 alumnoController.getAll = async (req, res) => {
   try {
     const alumnos = await alumnoModel.find();
+    if (alumnos.length === 0) {
+      return response(res, 404, false, "", "No se encontraron alumnos");
+    }
     return response(res, 200, true, alumnos, "lista de alumnos");
   } catch (error) {
     return response(res, 500, false, "", error.message);
@@ -18,6 +22,16 @@ alumnoController.getAll = async (req, res) => {
 alumnoController.getById = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return response(
+        res,
+        400,
+        false,
+        "",
+        `El id ${id} no es valido para la base de datos`
+      );
+    }
     const alumnoEncontrado = await alumnoModel.findById({ _id: id });
     if (!alumnoEncontrado) {
       return response(res, 404, false, "", "alumno no encontrado");
@@ -71,6 +85,16 @@ alumnoController.putAlumno = async (req, res) => {
     const { id } = req.params;
     const { identificacion, telefono, universidad } = req.body;
 
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return response(
+        res,
+        400,
+        false,
+        "",
+        `El id ${id} no es valido para la base de datos`
+      );
+    }
+
     const alumnoEncontrado = await alumnoModel.findOne({ _id: id });
     if (!alumnoEncontrado) {
       return response(res, 404, false, "", "alumno no encontrado");
@@ -110,6 +134,16 @@ alumnoController.putAlumno = async (req, res) => {
 alumnoController.deleteAlumno = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return response(
+        res,
+        400,
+        false,
+        "",
+        `El id ${id} no es valido para la base de datos`
+      );
+    }
     const alumnoEncontrado = await alumnoModel.findById({ _id: id });
     if (!alumnoEncontrado) {
       return response(res, 404, false, "", "alumno encontrado");

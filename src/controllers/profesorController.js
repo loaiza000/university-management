@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { response } from "../helpers/response.js";
 import { alumnoModel } from "../models/alumnoModel.js";
 import { cursoModel } from "../models/cursoModel.js";
@@ -9,6 +10,9 @@ const profesorController = {};
 profesorController.getAll = async (req, res) => {
   try {
     const profesores = await profesorModel.find();
+    if (profesores.length === 0) {
+      return response(res, 404, false, "", "No se encontraron profesores");
+    }
     return response(res, 200, true, profesores, "lista de profesores");
   } catch (error) {
     return response(res, 500, false, "", error.message);
@@ -18,6 +22,17 @@ profesorController.getAll = async (req, res) => {
 profesorController.getById = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return response(
+        res,
+        400,
+        false,
+        "",
+        `El id ${id} no es valido para la base de datos`
+      );
+    }
+
     const profesorEncontrado = await profesorModel.findById({ _id: id });
     if (!profesorEncontrado) {
       return response(res, 404, false, "", "profesor no encontrado");
@@ -78,6 +93,17 @@ profesorController.putProfesor = async (req, res) => {
   try {
     const { id } = req.params;
     const { correo, telefono, identificacion, universidad } = req.body;
+
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return response(
+        res,
+        400,
+        false,
+        "",
+        `El id ${id} no es valido para la base de datos`
+      );
+    }
+
     const profesorEncontrado = await profesorModel.findById({ _id: id });
     if (!profesorEncontrado) {
       return response(res, 404, false, "", "profesor no encontrado");
@@ -131,6 +157,17 @@ profesorController.putProfesor = async (req, res) => {
 profesorController.deleteProfesor = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return response(
+        res,
+        400,
+        false,
+        "",
+        `El id ${id} no es valido para la base de datos`
+      );
+    }
+
     const profesorEncontrado = await profesorModel.findById({ _id: id });
     if (!profesorEncontrado) {
       return response(res, 404, false, "", "profesor no encontrado");
@@ -153,6 +190,17 @@ profesorController.deleteProfesor = async (req, res) => {
 profesorController.listarProfesoresUniEsp = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return response(
+        res,
+        400,
+        false,
+        "",
+        `El id ${id} no es valido para la base de datos`
+      );
+    }
+
     const universidadEncontrada = await universidadModel.findById({
       _id: id,
     });
@@ -163,8 +211,14 @@ profesorController.listarProfesoresUniEsp = async (req, res) => {
     const profesoresUniEsp = await profesorModel.find({
       universidad: universidadEncontrada._id,
     });
-    if(profesoresUniEsp.length === 0){
-      return response(res,404,false,"","la universidad no tiene profesores")
+    if (profesoresUniEsp.length === 0) {
+      return response(
+        res,
+        404,
+        false,
+        "",
+        "la universidad no tiene profesores"
+      );
     }
 
     return response(
@@ -184,6 +238,17 @@ profesorController.listarProfesoresUniEsp = async (req, res) => {
 profesorController.profesoresCursosAlumnoEsp = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return response(
+        res,
+        400,
+        false,
+        "",
+        `El id ${id} no es valido para la base de datos`
+      );
+    }
+
     const alumnoEncontrado = await alumnoModel.findById({ _id: id });
     if (!alumnoEncontrado) {
       return response(res, 404, false, "", "alumno no encontrado");

@@ -12,6 +12,7 @@ import profesorRoutes from "./routes/profesor.routes.js";
 import notaRoutes from "./routes/nota.routes.js";
 import cursoRoutes from "./routes/curso.routes.js";
 import alumnoRoutes from "./routes/alumno.routes.js";
+import usuarioRouter from "./routes/usuario.routes.js";
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use("/profesor", profesorRoutes);
 app.use("/nota", notaRoutes);
 app.use("/curso", cursoRoutes);
 app.use("/alumno", alumnoRoutes);
+app.use("/usuario", usuarioRouter);
 
 app.listen(app.get("Port"), () => {
   console.log("Escuchando por el puerto", app.get("Port"));
