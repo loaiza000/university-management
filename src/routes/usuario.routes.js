@@ -1,7 +1,7 @@
 import { Router } from "express";
-import usuarioController from "../controllers/usuarioController";
-import { authClient } from "../middleware/auth";
-import { validRoles } from "../constants/valid.roles";
+import usuarioController from "../controllers/usuarioController.js";
+import { authClient } from "../middleware/auth.js";
+import { validRoles } from "../constants/valid.roles.js";
 
 const usuarioRouter = Router();
 
